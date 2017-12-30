@@ -1,14 +1,15 @@
-const express = require('express');
-const app = express();
+const app = require('express')();
 const bodyParser = require('body-parser');
 const Scrapper = require('./lib/kh-scrapper');
+const fs = require('fs');
 const kh = new Scrapper();
 
-app.use(bodyParser.urlencoded({extended:true}));
-app.use(bodyParser.json());
-
 app.listen(3000, () => {
-    kh.init();
-    console.log('Data extracted from KH:BBS to ./output/');
-})
+    kh.init()
+        .then(data => {
+            fs.writeFileSync('./output/mixage.json', JSON.stringify(data), 'utf-8');
+            console.log('output file in ./output/');
+            process.exit(0);
+        });
+});
 
